@@ -127,7 +127,19 @@ body {
   font-size: 24px;
   padding: 10px;
   list-style-type: square;
+  position: relative;
 }
 .history-list {
   list-style-type: square;
+}
+.calculator-grid > div > button.clear-history {
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+  max-width: 5rem;
+  height: 1.8rem;
+  font-size: 1rem;
+  border: 1px solid white;
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.75);
 }
