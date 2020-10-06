@@ -132,7 +132,7 @@ body {
 .history-list {
   list-style-type: square;
 }
-.calculator-grid > div > button.clear-history {
+.calculator-grid > .history > .clear-history {
   position: absolute;
   right: 0.5rem;
   top: 0.5rem;
