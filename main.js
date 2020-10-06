@@ -49,7 +49,6 @@ class Calculator {
       this.calculation.push(this.currentOperand, operation);
     } else {
       this.calculation.push(operation);
-
     }
 
     this.operation = operation;
@@ -149,6 +148,9 @@ class Calculator {
     this.history.insertAdjacentHTML("afterbegin", itemMarkup);
     this.calculation = [];
   }
+  clearHistory() {
+    this.history.innerHTML = "";
+  }
 
   getDisplayNumber(number) {
     const stringNumber = number.toString();
@@ -197,7 +199,8 @@ const refs = {
   currentOperandTextElement: document.querySelector("[data-current-operand]"),
   signChangeButton: document.querySelector("[data-sign-change]"),
   error: document.querySelector("[data-error]"),
-  history: document.querySelector("[data-history]")
+  history: document.querySelector("[data-history]"),
+  clearHistoryButton: document.querySelector("[data-clear-history]")
 };
 const calculator = new Calculator(
   refs.previousOperandTextElement,
@@ -241,4 +244,7 @@ refs.deleteButton.addEventListener("click", () => {
 refs.signChangeButton.addEventListener("click", () => {
   calculator.changeSign();
   calculator.updateDisplay();
+});
+refs.clearHistoryButton.addEventListener("click", () => {
+  calculator.clearHistory();
 });
