@@ -13,13 +13,14 @@ class Calculator {
     this.previousOperand = "";
     this.operation = undefined;
     this.readyToReset = false;
+    this.calculation = [];
   }
   delete() {
     this.currentOperand = this.currentOperand.toString().slice(0, -1);
   }
   appendNumber(number) {
     if (number === "." && this.currentOperand.includes(".")) return;
-    this.calculation.push(number);
+
     this.currentOperand = this.currentOperand.toString() + number.toString();
   }
   showError() {
@@ -27,23 +28,28 @@ class Calculator {
     setTimeout(() => (refs.error.style.display = "none"), 2500);
   }
   chooseOperation(operation) {
+    if (this.currentOperand === "") return;
+
     if (this.currentOperand !== "" && operation === "√") {
       if (this.currentOperand < 0) {
         this.showError();
         return;
       }
+
+      this.calculation.push("√", this.currentOperand);
       this.currentOperand = Math.sqrt(this.currentOperand);
       return;
     }
 
-    if (this.currentOperand === "") return;
     if (this.previousOperand !== "" && this.previousOperand !== "") {
       this.compute();
     }
+
     if (this.calculation.length === 0 && this.currentOperand) {
       this.calculation.push(this.currentOperand, operation);
     } else {
       this.calculation.push(operation);
+
     }
 
     this.operation = operation;
@@ -75,10 +81,20 @@ class Calculator {
     }
   }
   compute() {
+    if (
+      this.operation !== "√" &&
+      !Number(this.calculation[this.calculation.length - 1])
+    ) {
+      this.calculation.push(this.currentOperand);
+    }
+
     let computation;
     const prev = parseFloat(this.previousOperand);
     const current = parseFloat(this.currentOperand);
-    if (isNaN(current) || isNaN(prev)) return;
+    if (isNaN(current) || isNaN(prev)) {
+      this.readyToReset = true;
+      return;
+    }
     const fractionHelper = this.computeFractionHelper(prev, current);
     switch (this.operation) {
       case "+":
@@ -101,7 +117,6 @@ class Calculator {
       default:
         return;
     }
-    // this.calculation.push( parseFloat(computation.toFixed(15)).toString());
     this.currentOperand = parseFloat(computation.toFixed(15)).toString();
     this.operation = undefined;
     this.previousOperand = "";
@@ -122,16 +137,19 @@ class Calculator {
   }
 
   addToHistory() {
+    if (!this.currentOperand) return;
     const historyElements = document.querySelectorAll(".operation");
     if (historyElements.length > 10) {
       historyElements[7].remove();
     }
-    const itemMarkup = `<li class="operation">${this.calculation.join(" ")} = ${
+
+    const itemMarkup = `<li class="operation">${this.calculation.join("")} = ${
       this.currentOperand
     }</li>`;
     this.history.insertAdjacentHTML("afterbegin", itemMarkup);
     this.calculation = [];
   }
+
   getDisplayNumber(number) {
     const stringNumber = number.toString();
     const integerDigits = parseFloat(stringNumber.split(".")[0]);
